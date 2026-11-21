@@ -30,7 +30,7 @@ jobs:
           vendingctl compile
           python scripts/build_docs.py
 
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@v8
         with:
           branch: chore/expire-sandboxes
           delete-branch: true
