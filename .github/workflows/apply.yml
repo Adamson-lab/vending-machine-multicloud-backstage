@@ -26,7 +26,7 @@ jobs:
     environment: vending-apply
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: opentofu/setup-opentofu@v1
         with:
           tofu_version: 1.8.5
@@ -56,7 +56,7 @@ jobs:
     environment: vending-apply
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: opentofu/setup-opentofu@v1
         with:
           tofu_version: 1.8.5
@@ -82,8 +82,8 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
         with:
           repository: ${{ vars.AFT_REPO }}
           token: ${{ secrets.AFT_REPO_TOKEN }}
