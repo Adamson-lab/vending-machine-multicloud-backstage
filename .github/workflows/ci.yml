@@ -20,7 +20,7 @@ jobs:
       # Pin third-party actions to full commit SHAs in a real deployment (see SECURITY.md).
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
