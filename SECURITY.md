@@ -1,7 +1,7 @@
 # Security policy
 
 ## Reporting
-Report suspected vulnerabilities privately to the maintainers (replace with your security contact). Do not open a public issue.
+Report suspected vulnerabilities privately to the maintainers (favouradamson803@gmail.com). Do not open a public issue.
 
 ## Repository hygiene
 - No credentials or real identifiers. Cloud access uses federated, short-lived credentials only.
