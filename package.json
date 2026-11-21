@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@backstage/catalog-model": "1.7.0",
-    "@backstage/plugin-scaffolder-common": "1.5.9",
+    "@backstage/plugin-scaffolder-common": "2.4.0",
     "dompurify": "^3.1.0",
     "jsdom": "^24.0.0",
     "mermaid": "^10.9.0",
