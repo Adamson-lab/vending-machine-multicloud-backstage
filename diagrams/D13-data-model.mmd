@@ -1,0 +1,22 @@
+erDiagram
+  REQUEST ||--|{ PLACEMENT : "compiles to"
+  REQUEST ||--o| EXCEPTION : "may reference"
+  REQUEST ||--|{ APPROVAL : "requires"
+  PLACEMENT }o--|| CLOUD : "created in"
+  PLACEMENT ||--o| CATALOG_RESOURCE : "published as"
+  REQUEST {
+    string workload_name
+    string environment
+    string data_classification
+    string lifecycle
+    date requested_on
+  }
+  PLACEMENT {
+    string cloud
+    string container_kind
+    string parent_key
+  }
+  APPROVAL {
+    string role
+    string reason
+  }

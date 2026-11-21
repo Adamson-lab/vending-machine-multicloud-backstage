@@ -1,0 +1,15 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+*.tfvars
+!*.tfvars.example
+__pycache__/
+.pytest_cache/
+.venv/
+*.egg-info/
+node_modules
+.env
+.DS_Store

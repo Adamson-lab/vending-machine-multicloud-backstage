@@ -1,0 +1,21 @@
+flowchart TB
+  subgraph REQC["Request"]
+    A1["Self-service intake"]
+    A2["Validation"]
+    A3["Approval routing"]
+  end
+  subgraph PROV["Provision"]
+    B1["Account, subscription, project creation"]
+    B2["Baseline and budget"]
+    B3["Catalog registration"]
+  end
+  subgraph LIFE["Lifecycle"]
+    C1["Expiry and quarantine"]
+    C2["Controlled deletion"]
+    C3["Drift detection"]
+  end
+  subgraph GOVC["Govern"]
+    D1["Policy as code"]
+    D2["Audit evidence"]
+    D3["Exceptions"]
+  end

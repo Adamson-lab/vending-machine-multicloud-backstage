@@ -1,0 +1,17 @@
+flowchart LR
+  subgraph CUR["Current state"]
+    C1["Tickets and console work per cloud"]
+    C2["Inconsistent tags and budgets"]
+    C3["Sandbox sprawl"]
+  end
+  subgraph TRN["Transition"]
+    T1["Wave 1 sandbox via pipeline"]
+    T2["Wave 2 non-production"]
+    T3["Wave 3 production and brownfield adoption"]
+  end
+  subgraph TGT["Target state"]
+    G1["One request format, three clouds"]
+    G2["Approvals as code, evidence in Git"]
+    G3["Expiry and quarantine by default"]
+  end
+  CUR --> TRN --> TGT

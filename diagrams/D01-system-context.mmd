@@ -1,0 +1,32 @@
+flowchart LR
+  subgraph People
+    REQ["Workload teams"]
+    APP["Approvers: security, finance, compliance, architecture"]
+    PLT["Platform team"]
+    AUD["Auditors"]
+  end
+  subgraph VM["Vending machine (this repo)"]
+    BS["Backstage template"]
+    GIT["Requests in Git"]
+    ENG["vendingctl engine and policies"]
+    TFS["Terraform stacks"]
+  end
+  subgraph Clouds
+    AWS["AWS Control Tower via AFT"]
+    AZ["Azure billing and management groups"]
+    GCP["GCP folders and billing"]
+  end
+  LZ["Landing zone (project 1)"]
+  IDP["Entra ID"]
+  CAT["Backstage catalog"]
+  REQ --> BS --> GIT
+  APP --> GIT
+  PLT --> ENG
+  GIT --> ENG --> TFS
+  TFS --> AWS
+  TFS --> AZ
+  TFS --> GCP
+  LZ --> TFS
+  IDP --> REQ
+  ENG --> CAT
+  GIT --> AUD

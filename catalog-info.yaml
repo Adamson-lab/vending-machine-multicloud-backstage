@@ -1,0 +1,38 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: vending-machine
+  title: Multicloud vending machine
+  description: Requests, validation, approvals and Terraform inputs for AWS accounts, Azure subscriptions and GCP projects.
+  annotations:
+    github.com/project-slug: Adamson-lab/vending-machine-multicloud-backstage
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - platform
+    - multicloud
+    - governance
+  links:
+    - url: https://github.com/Adamson-lab/vending-machine-multicloud-backstage
+      title: Repository
+spec:
+  type: service
+  lifecycle: experimental
+  owner: group:default/platform-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: vending-machine-template
+  description: Software template for requesting a governed cloud container.
+spec:
+  type: url
+  target: https://github.com/Adamson-lab/vending-machine-multicloud-backstage/blob/main/backstage/templates/request-cloud-container/template.yaml
+---
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: vending-machine-containers
+  description: One Resource entity per vended account, subscription or project.
+spec:
+  type: url
+  target: https://github.com/Adamson-lab/vending-machine-multicloud-backstage/blob/main/generated/catalog/*.yaml

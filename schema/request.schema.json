@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Workload container request (cloud-neutral, v2)",
+  "description": "One file per workload+environment, named <workload_name>-<environment>.yaml under requests/. Business rules that cannot be expressed here live in src/vendingctl/rules.py.",
+  "type": "object",
+  "required": [
+    "workload_name",
+    "owner_email",
+    "cost_center",
+    "environment",
+    "data_classification",
+    "jurisdiction",
+    "clouds",
+    "requested_on"
+  ],
+  "properties": {
+    "workload_name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,23}$"
+    },
+    "owner_email": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+    },
+    "owner_first_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40,
+      "pattern": "^[^\"\\\\\\n]+$"
+    },
+    "owner_last_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40,
+      "pattern": "^[^\"\\\\\\n]+$"
+    },
+    "cost_center": {
+      "type": "string",
+      "pattern": "^cc-[0-9]{3,6}$"
+    },
+    "environment": {
+      "enum": [
+        "prod",
+        "nonprod",
+        "dev",
+        "sandbox"
+      ]
+    },
+    "data_classification": {
+      "enum": [
+        "public",
+        "internal",
+        "confidential",
+        "restricted"
+      ]
+    },
+    "jurisdiction": {
+      "enum": [
+        "eu",
+        "us",
+        "uk"
+      ]
+    },
+    "clouds": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "aws",
+          "azure",
+          "gcp"
+        ]
+      }
+    },
+    "requested_on": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "monthly_budget_usd": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "sandbox_ttl_days": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 90
+    },
+    "azure_landing_zone": {
+      "enum": [
+        "corp",
+        "online"
+      ]
+    },
+    "internet_ingress": {
+      "type": "boolean"
+    },
+    "exception_ref": {
+      "type": "string",
+      "pattern": "^EXC-[0-9]{3,5}$"
+    },
+    "gcp_apis": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+\\.googleapis\\.com$"
+      }
+    },
+    "gcp_viewer_group": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+    },
+    "lifecycle": {
+      "enum": [
+        "active",
+        "decommissioning"
+      ]
+    },
+    "decommission_reason": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 200
+    }
+  },
+  "additionalProperties": false
+}

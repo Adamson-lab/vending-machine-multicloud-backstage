@@ -1,0 +1,12 @@
+name: Risk or finding
+description: Record a risk or unexpected behaviour
+labels: [risk]
+body:
+  - type: textarea
+    id: description
+    attributes: {label: Description and evidence}
+    validations: {required: true}
+  - type: dropdown
+    id: impact
+    attributes: {label: Impact, options: [low, medium, high]}
+    validations: {required: true}

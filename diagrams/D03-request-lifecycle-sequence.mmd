@@ -1,0 +1,23 @@
+sequenceDiagram
+  autonumber
+  actor U as Requester
+  participant BS as Backstage
+  participant GH as GitHub PR
+  participant CI as Validation workflow
+  participant OPA as Approval policy
+  actor AP as Approvers
+  participant AP2 as Apply workflow
+  participant CL as Cloud APIs
+  U->>BS: Fill template
+  BS->>GH: Open PR with request file
+  GH->>CI: Trigger
+  CI->>CI: Schema, rules R1 to R10, compile check
+  CI->>OPA: Evaluate approvals
+  OPA-->>CI: Required roles with reasons
+  CI-->>GH: Labels and status
+  AP->>GH: Review and approve
+  GH->>GH: Gate checks required roles approved
+  GH->>AP2: Merge to main
+  AP2->>CL: Plan then apply with environment approval
+  CL-->>AP2: Container identifiers
+  AP2-->>U: Notify and publish to catalog

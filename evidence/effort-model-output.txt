@@ -1,0 +1,12 @@
+WARNING: inputs are ILLUSTRATIVE PLACEHOLDERS, not measurements.
+
+Manual minutes per request:    126.8
+Automated minutes per request: 18.0
+Break-even requests per month: 41.4
+
+| Requests/month | Manual | Automated | Platform | Net saving/month |
+|---|---|---|---|---|
+| 5 | 845 | 120 | 6,000 | -5,275 |
+| 20 | 3,380 | 480 | 6,000 | -3,100 |
+| 60 | 10,140 | 1,440 | 6,000 | 2,700 |
+| 150 | 25,350 | 3,600 | 6,000 | 15,750 |

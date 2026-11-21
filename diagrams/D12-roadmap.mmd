@@ -1,0 +1,15 @@
+gantt
+  title Vending machine roadmap
+  dateFormat YYYY-MM-DD
+  axisFormat %b
+  section Foundation
+  Contract, engine and policies        :a1, 2027-02-01, 30d
+  Terraform stacks and sandbox tests   :a2, after a1, 30d
+  section Pilot
+  Sandbox pilot on three clouds        :b1, after a2, 30d
+  Backstage template pilot             :b2, after a2, 30d
+  section Rollout
+  Non-production cut-over              :c1, after b1, 30d
+  Production cut-over                  :c2, after c1, 30d
+  section Operate
+  Expiry automation and scorecard      :d1, after b1, 45d

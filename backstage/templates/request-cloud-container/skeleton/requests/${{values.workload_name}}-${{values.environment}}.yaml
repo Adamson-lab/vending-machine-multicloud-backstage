@@ -1,0 +1,19 @@
+# Created from the Backstage template "Request a governed cloud container".
+# Do not rename this file: it must be <workload_name>-<environment>.yaml.
+workload_name: ${{ values.workload_name }}
+owner_email: ${{ values.owner_email }}
+owner_first_name: "${{ values.owner_first_name }}"
+owner_last_name: "${{ values.owner_last_name }}"
+cost_center: ${{ values.cost_center }}
+environment: ${{ values.environment }}
+data_classification: ${{ values.data_classification }}
+jurisdiction: ${{ values.jurisdiction }}
+clouds: [${{ values.clouds | join(", ") }}]
+requested_on: "${{ values.requested_on }}"
+{% if values.monthly_budget_usd %}monthly_budget_usd: ${{ values.monthly_budget_usd }}
+{% endif %}{% if values.sandbox_ttl_days %}sandbox_ttl_days: ${{ values.sandbox_ttl_days }}
+{% endif %}{% if values.azure_landing_zone %}azure_landing_zone: ${{ values.azure_landing_zone }}
+{% endif %}{% if values.internet_ingress %}internet_ingress: true
+{% endif %}{% if values.exception_ref %}exception_ref: ${{ values.exception_ref }}
+{% endif %}{% if values.gcp_viewer_group %}gcp_viewer_group: ${{ values.gcp_viewer_group }}
+{% endif %}

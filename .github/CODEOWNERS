@@ -1,0 +1,11 @@
+# Replace the placeholder teams with real GitHub teams.
+*                          @your-org/platform-team
+/policies/                 @your-org/platform-team @your-org/security-architecture @your-org/architecture-review-board
+/config/                   @your-org/platform-team @your-org/security-architecture
+/schema/                   @your-org/platform-team @your-org/architecture-review-board
+/src/                      @your-org/platform-team @your-org/security-architecture
+/.github/                  @your-org/platform-team @your-org/security-architecture
+/generated/                @your-org/platform-team
+/infra/                    @your-org/platform-team @your-org/security-architecture
+/docs/04-adr/              @your-org/architecture-review-board
+/docs/12-governance/       @your-org/architecture-review-board

@@ -1,0 +1,19 @@
+# Merge into your Backstage app-config.yaml. Nothing here is a secret: the token comes
+# from the environment.
+integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}   # a GitHub App is preferable to a personal access token in production
+
+catalog:
+  rules:
+    - allow: [Component, Resource, Location, Template, System, Group, User]
+  locations:
+    # Registers the service, the request template and one Resource per vended container.
+    - type: url
+      target: https://github.com/Adamson-lab/vending-machine-multicloud-backstage/blob/main/catalog-info.yaml
+
+# The template uses these built-in scaffolder actions, so no custom plugin is required:
+#   fetch:template, publish:github:pull-request
+# The pull-request action needs a token that can push a branch and open a pull request on the
+# requests repository.

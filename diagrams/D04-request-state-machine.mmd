@@ -1,0 +1,9 @@
+stateDiagram-v2
+  [*] --> Draft
+  Draft --> Validated: checks pass
+  Draft --> Draft: checks fail, requester fixes
+  Validated --> Approved: required roles approve
+  Approved --> Active: merged and applied
+  Active --> Decommissioning: owner request or sandbox expiry
+  Decommissioning --> Retired: manual deletion after retention
+  Retired --> [*]

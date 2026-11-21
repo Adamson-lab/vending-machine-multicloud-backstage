@@ -1,0 +1,64 @@
+name: validate-requests
+
+# Runs on pull requests that touch requests. Uses `pull_request` (not pull_request_target):
+# untrusted fork code never runs with write permissions. Requests are expected to come from
+# branches in this repository (the Backstage template pushes one).
+on:
+  pull_request:
+    paths:
+      - "requests/**"
+      - "generated/**"
+      - "config/**"
+      - "policies/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: validate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - uses: open-policy-agent/setup-opa@v2
+        with:
+          version: 0.68.0
+
+      - name: Validate requests and check generated files
+        run: |
+          vendingctl validate
+          vendingctl compile --check
+
+      - name: Route approvals and label the pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          : > /tmp/roles.txt
+          git diff --name-only --diff-filter=AM "origin/${BASE_REF}...HEAD" -- 'requests/*.yaml' > /tmp/changed.txt
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            vendingctl input "$f" > /tmp/input.json
+            opa eval -f raw -d policies/rego/approvals.rego --stdin-input \
+              'concat("\n", sort(data.vending.approvals.required))' < /tmp/input.json >> /tmp/roles.txt
+            echo >> /tmp/roles.txt
+          done < /tmp/changed.txt
+          sort -u /tmp/roles.txt | sed '/^$/d' > /tmp/required.txt
+          echo "Required approver roles:"; cat /tmp/required.txt
+          while IFS= read -r role; do
+            gh label create "needs:${role}" --color FBCA04 --description "Approval needed from ${role}" --force >/dev/null
+            gh pr edit "$PR_NUMBER" --add-label "needs:${role}"
+          done < /tmp/required.txt

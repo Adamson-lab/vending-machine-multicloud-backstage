@@ -1,0 +1,13 @@
+# Example: non-production workload on all three clouds. Synthetic data.
+workload_name: orders-web
+owner_email: sam.builder@example.com
+owner_first_name: Sam
+owner_last_name: Builder
+cost_center: cc-3100
+environment: nonprod
+data_classification: internal
+jurisdiction: eu
+clouds: [aws, azure, gcp]
+requested_on: "2027-01-13"
+monthly_budget_usd: 2500
+azure_landing_zone: online

@@ -1,0 +1,29 @@
+# Verification run - 2026-11-21T06:27Z
+tools: Python 3.12.3 | opa 0.68.0 | OpenTofu v1.8.5 | node v22.23.5 | actionlint 1.7.1
+
+## vendingctl validate / compile --check / docs sync
+OK 3 request(s) valid
+generated/ in sync
+docs in sync
+
+## pytest
+........................................................................ [ 69%]
+................................                                         [100%]
+104 passed in 2.30s
+
+## opa
+opa check ok
+PASS: 14/14
+
+## tofu fmt
+format ok
+
+## actionlint
+workflows clean
+
+## backstage entities
+OK   generated/catalog/payments-api-prod-azure.yaml (Resource/payments-api-prod-azure)
+10/10 entities valid
+
+## diagrams
+31/31 diagrams parse

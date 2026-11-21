@@ -1,0 +1,13 @@
+# Example: short-lived GCP sandbox with an expiry. Synthetic data.
+workload_name: analytics-spike
+owner_email: data.lead@example.com
+cost_center: cc-2210
+environment: sandbox
+data_classification: internal
+jurisdiction: eu
+clouds: [gcp]
+requested_on: "2027-01-12"
+monthly_budget_usd: 300
+sandbox_ttl_days: 14
+gcp_apis: [bigquery.googleapis.com]
+gcp_viewer_group: data-team@example.com

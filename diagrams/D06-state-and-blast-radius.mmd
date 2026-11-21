@@ -1,0 +1,15 @@
+flowchart LR
+  subgraph AZS["Azure stack and state"]
+    AZ1["subscriptions map"]
+  end
+  subgraph GCS["GCP stack and state"]
+    GC1["projects map"]
+  end
+  subgraph AFT["AWS AFT pipeline and state"]
+    AF1["one module per account"]
+  end
+  AZ1 -.->|"failure or lock contention affects only Azure"| AZX["Azure vending"]
+  GC1 -.-> GCX["GCP vending"]
+  AF1 -.-> AFX["AWS vending"]
+  SHARD["Shard a stack by cost center or region when plan time grows"] --> AZS
+  SHARD --> GCS

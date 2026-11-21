@@ -1,0 +1,14 @@
+sequenceDiagram
+  autonumber
+  participant G as generated/aft/*.tf
+  participant AR as AFT account-request repo
+  participant AFT as AFT pipeline
+  participant CT as Control Tower Account Factory
+  participant AC as Account customizations
+  G->>AR: Pull request with account request
+  AR->>AFT: Merge triggers pipeline
+  AFT->>CT: Provision account in registered OU
+  CT-->>AFT: Account enrolled with baseline controls
+  AFT->>AC: Run baseline-standard or baseline-restricted
+  AC-->>AFT: S3 block public access, EBS encryption, budget
+  AFT-->>AR: Account ready

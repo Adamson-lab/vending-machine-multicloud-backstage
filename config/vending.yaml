@@ -1,0 +1,39 @@
+# Platform configuration for the vending machine. All values are placeholders:
+# replace with your organization's real values (never commit secrets).
+schema_version: 1
+organization:
+  name: example-corp
+  email_domain: example.com          # AWS account emails: aws+<name>@<domain>
+  jurisdictions: [eu, us, uk]
+limits:
+  sandbox_max_budget_usd: 500
+  sandbox_max_ttl_days: 30
+  budget_thresholds_percent: [50, 80, 100]
+approvals:
+  finance_budget_threshold_usd: 10000
+placements:
+  aws:                               # Control Tower registered OU names (flat names)
+    prod: Workloads-Prod
+    nonprod: Workloads-NonProd
+    dev: Workloads-NonProd
+    sandbox: Sandbox
+    decommissioning: Suspended
+  azure:                             # keys into the management_group_ids map from the landing zone
+    corp: corp
+    online: online
+    sandbox: sandbox
+    decommissioning: decommissioned
+  gcp:                               # keys into the folder_ids map from the landing zone
+    prod: workloads-prod
+    nonprod: workloads-nonprod
+    dev: workloads-nonprod
+    sandbox: sandbox
+    decommissioning: decommissioned
+gcp:
+  default_apis:
+    - logging.googleapis.com
+    - monitoring.googleapis.com
+aws:
+  customizations:
+    standard: baseline-standard
+    restricted: baseline-restricted

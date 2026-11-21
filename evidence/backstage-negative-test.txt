@@ -1,0 +1,4 @@
+FAIL generated/catalog/bad1.yaml (Resource/has spaces and !!) invalid metadata.name 'has spaces and !!'
+FAIL generated/catalog/bad2.yaml (Resource/missing-owner) /spec must have required property 'owner' - missingProperty: owner
+FAIL generated/catalog/bad3.yaml (Resource/bad-tag) invalid tag 'Not_A_Valid_Tag'
+0/3 entities valid

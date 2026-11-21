@@ -1,0 +1,9 @@
+flowchart TB
+  GH["GitHub outage"] --> F1["No new requests or applies: existing containers unaffected"]
+  OIDC["OIDC trust misconfigured"] --> F2["Apply fails closed: no credentials issued"]
+  LOCK["State lock held or corrupted"] --> F3["That cloud's vending blocked: runbook RB-07"]
+  BILL["Billing scope permission lost"] --> F4["Azure and GCP creation fails at apply"]
+  AFTD["AFT pipeline failure"] --> F5["AWS accounts queued: alert and retry"]
+  BAD["Bad generator change"] --> F6["Compile check fails in CI before merge"]
+  QUOTA["Account or project quota reached"] --> F7["Apply fails: raise quota, requests wait"]
+  BSD["Backstage unavailable"] --> F8["Requesters use PR directly: Git is the source of truth"]

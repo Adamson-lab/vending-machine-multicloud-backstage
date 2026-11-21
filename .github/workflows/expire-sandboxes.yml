@@ -1,0 +1,42 @@
+name: expire-sandboxes
+
+# Daily: find sandboxes past their TTL and open a pull request that moves them to
+# decommissioning (quarantine). Nothing is deleted; deletion is manual (runbook RB-05).
+# Requires repository setting: Actions may create pull requests.
+on:
+  schedule:
+    - cron: "23 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  expire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+
+      - name: Mark expired sandboxes and regenerate outputs
+        run: |
+          vendingctl expire --apply
+          vendingctl validate
+          vendingctl compile
+          python scripts/build_docs.py
+
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/expire-sandboxes
+          delete-branch: true
+          title: "chore: move expired sandboxes to decommissioning"
+          commit-message: "chore: move expired sandboxes to decommissioning"
+          body: |
+            Sandboxes past their TTL are moved to the quarantine location. Review the list of changed
+            request files. Merging triggers the normal apply workflow. No cloud container is deleted.
+          labels: lifecycle

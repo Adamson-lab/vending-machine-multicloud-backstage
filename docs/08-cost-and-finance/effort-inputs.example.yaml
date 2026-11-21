@@ -1,0 +1,19 @@
+# ILLUSTRATIVE PLACEHOLDER INPUTS. Not measurements. Replace with your own baseline:
+# time-tracking or ticket timestamps for the manual process, pipeline timestamps for the automated one.
+illustrative: true
+currency: USD
+requests_per_month_scenarios: [5, 20, 60, 150]
+manual:
+  minutes_per_request_by_cloud: {aws: 90, azure: 120, gcp: 75}   # ticket handling, console work, tagging, budget, follow-up
+  rework_rate: 0.25                                              # share of manual requests needing correction
+  rework_minutes: 45
+automated:
+  minutes_per_request_review: 15                                 # human review time per request (platform + approvers)
+  failure_rate: 0.05                                             # share needing manual intervention
+  failure_minutes: 60
+mix_of_clouds_per_request: {aws: 0.5, azure: 0.4, gcp: 0.3}      # expected clouds touched per request (can sum above 1)
+loaded_rate_per_hour: 80
+platform:
+  build_cost_one_off: 60000
+  amortisation_months: 24
+  run_cost_per_month: 3500                                        # runner minutes, maintenance share, Backstage hosting share

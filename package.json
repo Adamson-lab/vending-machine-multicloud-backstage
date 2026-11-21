@@ -1,0 +1,18 @@
+{
+  "name": "vending-machine-multicloud-backstage",
+  "private": true,
+  "type": "module",
+  "description": "Tooling for Backstage entity validation and diagram syntax checks",
+  "scripts": {
+    "validate:backstage": "node scripts/validate_backstage.mjs .",
+    "validate:diagrams": "node scripts/check_mermaid.mjs ."
+  },
+  "devDependencies": {
+    "@backstage/catalog-model": "1.7.0",
+    "@backstage/plugin-scaffolder-common": "1.5.9",
+    "dompurify": "^3.1.0",
+    "jsdom": "^24.0.0",
+    "mermaid": "^10.9.0",
+    "yaml": "^2.5.0"
+  }
+}

@@ -1,0 +1,14 @@
+# Example: regulated production workload on two clouds. All identifiers are synthetic.
+workload_name: payments-api
+owner_email: ada.owner@example.com
+owner_first_name: Ada
+owner_last_name: Owner
+cost_center: cc-1042
+environment: prod
+data_classification: restricted
+jurisdiction: eu
+clouds: [aws, azure]
+requested_on: "2027-01-11"
+monthly_budget_usd: 12000
+azure_landing_zone: corp
+internet_ingress: false

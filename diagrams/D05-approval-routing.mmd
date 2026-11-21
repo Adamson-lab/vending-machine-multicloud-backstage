@@ -1,0 +1,16 @@
+flowchart TB
+  S["Request opened"] --> P["Platform review: always"]
+  S --> Q1{"Confidential or restricted data?"}
+  Q1 -->|yes| SEC["Security"]
+  S --> Q2{"Internet ingress?"}
+  Q2 -->|yes| SEC
+  S --> Q3{"Budget above finance threshold?"}
+  Q3 -->|yes| FIN["Finance"]
+  S --> Q4{"All three clouds?"}
+  Q4 -->|yes| ARB["Architecture board"]
+  S --> Q5{"Restricted data?"}
+  Q5 -->|yes| CMP["Compliance"]
+  S --> Q6{"Exception referenced?"}
+  Q6 -->|yes| RSK["Risk acceptance"]
+  S --> Q7{"Decommissioning?"}
+  Q7 -->|yes| ONLY["Platform only"]

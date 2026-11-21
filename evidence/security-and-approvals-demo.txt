@@ -1,0 +1,21 @@
+# Injection attempt: owner_email containing a Terraform interpolation
+
+## Layer 1: schema rejects the request
+FAIL /tmp/evil/evil-app-nonprod.yaml
+  - SCHEMA: owner_email: 'a${file("/etc/passwd")}@example.com' does not match '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'
+
+## Layer 2: even if validation were bypassed, the HCL writer neutralises the payload
+SSOUserEmail              = "a$${file(\"/etc/passwd\")}@example.com"
+contains un-escaped interpolation: False
+
+# Approval routing for the example requests
+requests/analytics-spike-sandbox.yaml
+   platform <- all requests are reviewed by the platform team
+requests/orders-web-nonprod.yaml
+   architecture <- request spans all three clouds
+   platform <- all requests are reviewed by the platform team
+requests/payments-api-prod.yaml
+   compliance <- restricted data requires compliance review
+   finance <- monthly budget 12000 exceeds 10000
+   platform <- all requests are reviewed by the platform team
+   security <- data classification is restricted

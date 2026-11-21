@@ -1,0 +1,13 @@
+flowchart LR
+  subgraph BSX["Backstage"]
+    TPL["Template: request-cloud-container"]
+    ACT["Built-in actions: fetch:template and publish:github:pull-request"]
+    CATA["Software catalog"]
+  end
+  subgraph REPO["Requests repository"]
+    SK["skeleton renders requests/*.yaml"]
+    GEN["generated/catalog/*.yaml"]
+  end
+  TPL --> ACT --> SK
+  GEN --> CATA
+  CATA --> OWN["Owner sees their containers and budgets"]

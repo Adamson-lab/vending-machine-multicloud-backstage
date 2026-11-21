@@ -1,0 +1,8 @@
+{
+  "platform": "platform-team",
+  "security": "security-architecture",
+  "finance": "finops",
+  "architecture": "architecture-review-board",
+  "compliance": "compliance-office",
+  "risk-acceptance": "ciso-office"
+}

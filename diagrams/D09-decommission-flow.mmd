@@ -1,0 +1,10 @@
+flowchart TB
+  T1["Schedule: daily expiry check"] --> E{"Sandbox past TTL?"}
+  E -->|no| END1["Nothing to do"]
+  E -->|yes| PR["Open PR: lifecycle decommissioning with reason"]
+  O["Owner request"] --> PR
+  PR --> RV["Platform review"]
+  RV --> AP["Merge and apply"]
+  AP --> Q["Container moved to Suspended OU, decommissioned group or folder"]
+  Q --> W["Retention window"]
+  W --> M["Manual deletion runbook RB-05 with named approver"]

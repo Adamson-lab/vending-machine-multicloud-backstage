@@ -1,0 +1,77 @@
+name: approval-gate
+
+# Required status check: the pull request cannot merge until every required approver role has an
+# approval from a member of the mapped team (policies/data/approval-teams.json). The author's own
+# approval never counts. Configure repository variable ORG and a secret ORG_READ_TOKEN with
+# read:org so team membership can be checked. Disabled until ENABLE_APPROVAL_GATE is true.
+on:
+  pull_request:
+    paths:
+      - "requests/**"
+  pull_request_review:
+    types: [submitted, dismissed]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  gate:
+    if: ${{ vars.ENABLE_APPROVAL_GATE == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - uses: open-policy-agent/setup-opa@v2
+        with:
+          version: 0.68.0
+
+      - name: Evaluate required roles
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          set -euo pipefail
+          : > /tmp/roles.txt
+          git diff --name-only --diff-filter=AM "origin/${BASE_REF}...HEAD" -- 'requests/*.yaml' > /tmp/changed.txt
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            vendingctl input "$f" > /tmp/input.json
+            opa eval -f raw -d policies/rego/approvals.rego --stdin-input \
+              'concat("\n", sort(data.vending.approvals.required))' < /tmp/input.json >> /tmp/roles.txt
+            echo >> /tmp/roles.txt
+          done < /tmp/changed.txt
+          sort -u /tmp/roles.txt | sed '/^$/d' | jq -R . | jq -s . > /tmp/required.json
+
+      - name: Collect approvals from team members
+        env:
+          GH_TOKEN: ${{ secrets.ORG_READ_TOKEN }}
+          ORG: ${{ vars.ORG }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          set -euo pipefail
+          gh api --paginate "repos/${REPO}/pulls/${PR_NUMBER}/reviews" | jq -s 'add // []' > /tmp/reviews.json
+          vendingctl reviewers --reviews /tmp/reviews.json --author "$AUTHOR" > /tmp/reviewers.txt
+          echo '[]' > /tmp/approvals.json
+          while IFS= read -r user; do
+            [ -z "$user" ] && continue
+            teams='[]'
+            for team in $(jq -r 'values[]' policies/data/approval-teams.json | sort -u); do
+              if gh api "orgs/${ORG}/teams/${team}/memberships/${user}" --jq '.state' 2>/dev/null | grep -qx active; then
+                teams=$(jq -c --arg t "$team" '. + [$t]' <<< "$teams")
+              fi
+            done
+            jq -c --arg u "$user" --argjson t "$teams" '. + [{"reviewer": $u, "teams": $t}]' /tmp/approvals.json > /tmp/approvals.next
+            mv /tmp/approvals.next /tmp/approvals.json
+          done < /tmp/reviewers.txt
+
+      - name: Gate
+        run: |
+          vendingctl gate --required /tmp/required.json --approvals /tmp/approvals.json --teams policies/data/approval-teams.json

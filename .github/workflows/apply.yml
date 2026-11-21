@@ -1,0 +1,103 @@
+name: apply
+
+# Applies merged requests. DISABLED until repository variable ENABLE_APPLY is true and OIDC trust
+# is configured per cloud (docs/07-operations/runbooks.md RB-01). No static cloud credentials are
+# used: each job exchanges the GitHub OIDC token for short-lived access. The `vending-apply`
+# environment must require reviewers and be restricted to the main branch.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "generated/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: apply
+  cancel-in-progress: false # never cancel an apply mid-flight
+
+jobs:
+  azure:
+    if: ${{ vars.ENABLE_APPLY == 'true' }}
+    runs-on: ubuntu-latest
+    environment: vending-apply
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: 1.8.5
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_MANAGEMENT_SUBSCRIPTION_ID }}
+      - name: Plan and apply
+        working-directory: infra/stacks/azure
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_MANAGEMENT_SUBSCRIPTION_ID }}
+          TF_VAR_management_subscription_id: ${{ vars.AZURE_MANAGEMENT_SUBSCRIPTION_ID }}
+          TF_VAR_billing_scope_id: ${{ vars.AZURE_BILLING_SCOPE_ID }}
+          TF_VAR_management_group_ids: ${{ vars.AZURE_MANAGEMENT_GROUP_IDS_JSON }}
+        run: |
+          tofu init -input=false -backend-config="${{ vars.AZURE_BACKEND_CONFIG }}"
+          tofu plan -input=false -var-file=../../../generated/azure.tfvars.json -out=tfplan
+          tofu apply -input=false tfplan
+
+  gcp:
+    if: ${{ vars.ENABLE_APPLY == 'true' }}
+    runs-on: ubuntu-latest
+    environment: vending-apply
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: 1.8.5
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_APPLY_SERVICE_ACCOUNT }}
+      - name: Plan and apply
+        working-directory: infra/stacks/gcp
+        env:
+          TF_VAR_billing_quota_project: ${{ vars.GCP_BILLING_QUOTA_PROJECT }}
+          TF_VAR_billing_account: ${{ vars.GCP_BILLING_ACCOUNT }}
+          TF_VAR_folder_ids: ${{ vars.GCP_FOLDER_IDS_JSON }}
+        run: |
+          tofu init -input=false -backend-config="${{ vars.GCP_BACKEND_CONFIG }}"
+          tofu plan -input=false -var-file=../../../generated/gcp.tfvars.json -out=tfplan
+          tofu apply -input=false tfplan
+
+  aws-aft-delivery:
+    if: ${{ vars.ENABLE_APPLY == 'true' && vars.AFT_REPO != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.AFT_REPO }}
+          token: ${{ secrets.AFT_REPO_TOKEN }}
+          path: aft
+      - name: Sync generated account requests (only vending-*.tf are ever touched)
+        run: |
+          set -euo pipefail
+          mkdir -p aft/terraform
+          find aft/terraform -maxdepth 1 -name 'vending-*.tf' -type f -delete
+          cp generated/aft/vending-*.tf aft/terraform/ 2>/dev/null || true
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          path: aft
+          token: ${{ secrets.AFT_REPO_TOKEN }}
+          branch: vending/account-requests
+          title: "Vending machine: account requests"
+          commit-message: "chore: sync account requests from vending machine"

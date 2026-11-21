@@ -1,0 +1,63 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # Pin third-party actions to full commit SHAs in a real deployment (see SECURITY.md).
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install vendingctl and test tools
+        run: pip install -e ".[dev]"
+
+      - uses: open-policy-agent/setup-opa@v2
+        with:
+          version: 0.68.0
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: 1.8.5
+          tofu_wrapper: false
+
+      - name: Requests are valid and generated files are in sync
+        run: |
+          vendingctl validate
+          vendingctl compile --check
+          python scripts/build_docs.py --check
+
+      - name: Python tests (engine, Terraform logic, template drift, approvals end to end)
+        run: python -m pytest -q
+
+      - name: Rego checks and tests
+        run: |
+          opa check policies
+          opa test policies/rego -v
+
+      - name: Terraform formatting (modules, stacks, generated files)
+        run: tofu fmt -check -recursive infra generated
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Backstage entities and diagrams
+        run: |
+          npm install --no-audit --no-fund
+          node scripts/validate_backstage.mjs .
+          node scripts/check_mermaid.mjs .

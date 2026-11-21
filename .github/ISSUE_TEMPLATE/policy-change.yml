@@ -1,0 +1,12 @@
+name: Approval policy or threshold change
+description: Propose a change to approval routing, thresholds or team mapping
+labels: [policy]
+body:
+  - type: textarea
+    id: change
+    attributes: {label: Proposed change and reason}
+    validations: {required: true}
+  - type: textarea
+    id: impact
+    attributes: {label: Impact on existing requests and approvers}
+    validations: {required: true}
