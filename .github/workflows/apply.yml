@@ -94,7 +94,7 @@ jobs:
           mkdir -p aft/terraform
           find aft/terraform -maxdepth 1 -name 'vending-*.tf' -type f -delete
           cp generated/aft/vending-*.tf aft/terraform/ 2>/dev/null || true
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@v8
         with:
           path: aft
           token: ${{ secrets.AFT_REPO_TOKEN }}
